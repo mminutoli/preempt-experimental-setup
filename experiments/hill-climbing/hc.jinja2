@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#BSUB -N
+#BSUB -alloc_flags smt8
+#BSUB -W 2:00
+#BSUB -nnodes {{nodes}}
+#BSUB -J {{nodes}}-{{name}}
+#BSUB -o {{output_root}}/{{log_label}}.out
+#BSUB -e {{output_root}}/{{log_label}}.err
+
+export OMP_NUM_THREADS={{workers}}
+export OMP_PLACES=sockets
+export OMP_PROC_BIND=spread
+
+module load gcc/8.1.1
+module load spectrum-mpi/10.3.1.2-20200121
+module load cuda/10.1.243
+
+
+{% for j in repetitions %}
+
+if [[ -f {{output_root}}/{{log_label}}-R{{j}}.json ]]; then
+    echo "Skipping {{output_root}}/{{log_label}}-R{{j}}.json"
+else
+    echo '{{tool}} -i {{graph}} --reload-binary -k {{k}} -d {{diffusion_model}} --streaming-gpu-workers {{gpu_workers}} --samples {{samples}} -o {{output_root}}/{{log_label}}-R{{j}}.json > {{output_root}}/{{log_label}}-R{{j}}.out'
+    jsrun --nrs {{nodes}} --smpiargs="-gpu" --tasks_per_rs 1 --cpu_per_rs ALL --gpu_per_rs 6 --rs_per_host 1 --latency_priority CPU-CPU --launch_distribution cyclic --bind rs {{tool}} -i {{graph}} --reload-binary -k {{k}} -d {{diffusion_model}} --samples {{samples}} --streaming-gpu-workers {{gpu_workers}} -o {{output_root}}/{{log_label}}-R{{j}}.json
+fi
+{% endfor %}
+
+

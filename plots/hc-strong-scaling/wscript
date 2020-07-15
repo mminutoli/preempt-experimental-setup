@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+from itertools import product
+
+def build(ctx):
+    graphs = [
+       'cit-HepPh',
+       'com-dblp',
+       'soc-Epinions',
+       'soc-Slashdot0811'
+    ]
+
+    for g in graphs:
+        data = ctx.path.ant_glob('*{g}*.json'.format(g=g))
+        target_filename = 'strong-scaling-hc-{g}.pdf'.format(g=g)
+        if data:
+            ctx(features='run_r_plot',
+                source=['plot-strong-scaling.r'],
+                data=data,
+                target=[target_filename])
+
+    task_plots = [
+        'hc-cit-HepPh.txt.bin-conf84_8_k50-R0.json',
+        'hc-soc-Epinions1.txt.bin-conf84_8_k50-R0.json',
+        'hc-soc-Slashdot0811.txt.bin-conf84_8_k50-R0.json',
+        'hc-com-dblp.ungraph.txt.bin-conf84_32_k50-R0.json',
+        'hc-montgomery.bin-conf84_8_k50-R0.json',
+        'hc-portland.bin-conf84_8_k50-R0.json'
+    ]
+    for record in task_plots:
+        ctx(features='run_r_plot',
+            source=['task-data-table.r'],
+            data=[record],
+            target=record + '.csv')
+
+        ctx(features='run_r_plot',
+            source=['plot-tasks-scatter.r'],
+            data=record + '.csv',
+            target=record + '-tasks.jpg')
+
+        ctx(features='run_r_plot',
+            source=['plot-tasks-extime-distribution.r'],
+            data=record + '.csv',
+            flags=['--from=1', '--to=10'],
+            target=record + '-tasks-extime-dist.jpg')

@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+def build(ctx):
+    results_dir = ctx.root.find_node(ctx.env.RESULTS_DIR)
+    inputs_dir = ctx.root.find_node(ctx.env.INPUTS_DIR)
+
+
+    dm = 'IC'
+
+    graphs = inputs_dir.ant_glob('*.bin')
+    for g in graphs:
+        for nodes in [2, 4, 8, 16, 32, 64, 128]:
+            exp_label = 'imm-{graph}-conf{w}_{gw}_k{k}'.format(graph=g.name, diffusion_model='IC', w=42, gw=nodes, k=100)
+            ctx(source='ripples.jinja2',
+                target= exp_label + '.sh',
+                tool=ctx.env.MPI_IMM[0],
+                epsilon=0.13,
+                k=100,
+                nodes=nodes,
+                name=g.name,
+                repetitions=range(0,1),
+                diffusion_model=dm,
+                graph=g.abspath(),
+                workers=42,
+                gpu_workers=21,
+                output_root=str(results_dir),
+                log_label=exp_label)
+
