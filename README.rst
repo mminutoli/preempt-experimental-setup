@@ -149,8 +149,8 @@ install R, beaware that our R scripts will install the missing packages.
 Therefore:
 
 - Don't remove :code:`-j1` the first time you run the build command.
-- Once you run the build command, go grab a book and your favorite caffeinated
-  beverage: it will take a while.
+- Once you started the build process, go grab a book and your favorite
+  caffeinated beverage: it will take a while.
 
 Contacts
 ========
