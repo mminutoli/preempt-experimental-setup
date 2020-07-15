@@ -147,9 +147,10 @@ If the machine where you are building the experimental setup does not have an R
 installation, the experimental setup won't compile our plots. If you decide to
 install R, beaware that our R scripts will install the missing packages.
 Therefore:
+
 - Don't remove :code:`-j1` the first time you run the build command.
-- Grab a book and your favourite caffeinated beverage after you run the build
-  command. It will take a while.
+- Once you run the build command, go grab a book and your favorite caffeinated
+  beverage: it will take a while.
 
 Contacts
 ========
