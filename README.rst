@@ -92,7 +92,7 @@ Configuring and building the experimental setup
 -----------------------------------------------
 
 This experimental setup was designed for Summit at the Oak Ridge Leadership
-Computing Facility. Detail on the machine can be found `here
+Computing Facility. Details on the machine can be found `here
 <https://www.olcf.ornl.gov/olcf-resources/compute-systems/summit/>`_.
 
 Ripples documents software dependencies using conan. The configuration used to
@@ -100,6 +100,7 @@ run the experiments on Summit is available in this repository in the Jinja2
 templates used to generate the batch scripts.
 
 The experimental setup includes:
+
 - Generators for the jobs to be submitted to summit.
 - The data produced during our runs.
 - R scripts to generate the scaling plots in the paper.
