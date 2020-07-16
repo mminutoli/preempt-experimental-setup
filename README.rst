@@ -1,6 +1,18 @@
 Experimental Setup for PREEMPT
 ==============================
 
+This repository contains the automation that was built as part of the PREEMPT
+experimental setup.  The repository is organized as follow:
+
+- :code:`plots` : Contains scripts and the data collected during our runs. Once
+  the experimental setup is configured and built, the plots included in the
+  paper are generated in the directories under :code:`build/plots`.
+- :code:`portland-dataset` : A contact network for the city of Portland.
+- :code:`experiments`: The batch script generator to reproduce our experimental
+  setup. Module dependencies are documented inside the Jinja2 templates used to
+  generate the scripts.
+
+
 Building Ripples on Summit
 --------------------------
 
@@ -88,6 +100,22 @@ Store all the generated binary in the same directory. In the rest of this guide,
 we will refer to the directory containing the binaries as :code:`$INPUTS_DIR`.
 
 
+Reassembling the Portland dataset
+---------------------------------
+
+The Portland data set is stored under :code:`portland-dataset`. To reassemble
+and produce the needed binary file used the following commands:
+
+.. code-block:: shell
+
+   $ cd $RIPPLES_DIR/protland-dataset
+   $ cat portland_weights.tar.xz.parta* > portland_weights.tar.xz 
+   $ tar xJf portland_weights.tar.xz
+   $ RIPPLES_DIR/build/release/tools/dump-graph -i portland_weights.txt -u -w -d IC --dump-binary -o portland_weights.txt.IC.bin
+
+Move the binary file in your :code:`$INPUTS_DIR`.
+
+
 Configuring and building the experimental setup
 -----------------------------------------------
 
@@ -135,7 +163,7 @@ logs produced by their execution will be stored under :code:`$RESULTS_DIR`. You
 need to be sure that :code:`$RESULTS_DIR` can be written by the compute nodes.
 
 
-The plots can be found under :code:`build/plots`.
+The plots in the paper will be generated under :code:`build/plots`.
 
 Important Note
 **************
@@ -152,6 +180,31 @@ Therefore:
 - Once you started the build process, go grab a book and your favorite
   caffeinated beverage: it will take a while.
 
+
+Submitting Jobs on Summit
+=========================
+
+Once you have generated the scripts, you will be able to find them under the
+build:
+
+- Hill Climbing: :code:`build/experiments/hill-climbing`
+- IMM: :code:`build/experiments/imm`
+
+Jobs can be submitted on the machine with:
+
+.. code-block:: shell
+
+   $ bsub -P <ACCOUNT> <path-to-script>
+
+
+Each job will produce an execution log in the form of a JSON file in the
+:code:`$RESULT_DIR`. The :code:`plots` directory contains all the needed scripts
+to generate the scaling plots and tasking related analysis.
+
+For any further information please refer to the `Summit User Guide
+<https://docs.olcf.ornl.gov/systems/summit_user_guide.html>`_.
+
+   
 Contacts
 ========
 
